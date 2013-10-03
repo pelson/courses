@@ -1,0 +1,1 @@
+array([10, 20, 30, 'a string inside a list'], dtype=object)

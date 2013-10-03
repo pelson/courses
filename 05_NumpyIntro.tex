@@ -1,0 +1,1409 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass{article}
+
+    
+    
+    \usepackage{graphicx} % Used to insert images
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{color} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage[utf8]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    
+
+    
+    
+    \definecolor{orange}{cmyk}{0,0.4,0.8,0.2}
+    \definecolor{darkorange}{rgb}{.71,0.21,0.01}
+    \definecolor{darkgreen}{rgb}{.12,.54,.11}
+    \definecolor{myteal}{rgb}{.26, .44, .56}
+    \definecolor{gray}{gray}{0.45}
+    \definecolor{lightgray}{gray}{.95}
+    \definecolor{mediumgray}{gray}{.8}
+    \definecolor{inputbackground}{rgb}{.95, .95, .85}
+    \definecolor{outputbackground}{rgb}{.95, .95, .95}
+    \definecolor{traceback}{rgb}{1, .95, .95}
+    % new ansi colors
+    \definecolor{brown}{rgb}{0.54,0.27,0.07}
+    \definecolor{purple}{rgb}{0.5,0.0,0.5}
+    \definecolor{darkgray}{gray}{0.25}
+    \definecolor{lightred}{rgb}{1.0,0.39,0.28}
+    \definecolor{lightgreen}{rgb}{0.48,0.99,0.0}
+    \definecolor{lightblue}{rgb}{0.53,0.81,0.92}
+    \definecolor{lightpurple}{rgb}{0.87,0.63,0.87}
+    \definecolor{lightcyan}{rgb}{0.5,1.0,0.83}
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{05\_NumpyIntro}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=blue,
+      linkcolor=darkorange,
+      citecolor=darkgreen,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{An Introduction to numpy for numerical Computing in Python}
+
+While the Python language is an excellent tool for general-purpose
+programming, with a highly readable syntax, rich and powerful data types
+(strings, lists, sets, dictionaries, arbitrary length integers, etc) and
+a very comprehensive standard library, it was not designed specifically
+for mathematical and scientific computing. Neither the language nor its
+standard library have facilities for the efficient representation of
+multidimensional datasets, tools for linear algebra and general matrix
+manipulations (an essential building block of virtually all technical
+computing), nor any data visualization facilities.
+
+In particular, Python lists are very flexible containers that can be
+nested arbitrarily deep and which can hold any Python object in them,
+but they are poorly suited to represent efficiently common mathematical
+constructs like vectors and matrices. In contrast, much of our modern
+heritage of scientific computing has been built on top of libraries
+written in the Fortran language, which has native support for vectors
+and matrices as well as a library of mathematical functions that can
+efficiently operate on entire arrays at once.
+
+    \subsection{Basics of Numpy arrays}
+
+We now turn our attention to the Numpy library, which forms the base
+layer for the entire `scipy ecosystem'. Once you have installed numpy,
+you can import it as
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k+kn}{as} \PY{n+nn}{np}
+\end{Verbatim}
+
+    As mentioned above, the main object provided by numpy is a powerful
+array. We'll start by exploring how the numpy array differs from Python
+lists. We start by creating a simple list and an array with the same
+contents of the list:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{lst} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{30}\PY{p}{,} \PY{l+m+mi}{40}\PY{p}{]}
+        \PY{n}{arr} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{30}\PY{p}{,} \PY{l+m+mi}{40}\PY{p}{]}\PY{p}{)}
+        \PY{k}{print} \PY{n}{lst}
+        \PY{k}{print} \PY{n}{arr}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[10, 20, 30, 40]
+[10 20 30 40]
+    \end{Verbatim}
+
+    \subsubsection{Element indexing}
+
+Elements of a one-dimensional array are accessed with the same syntax as
+a list:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{n}{lst}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}4}]:} 10
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{n}{arr}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+        ---------------------------------------------------------------------------
+    NameError                                 Traceback (most recent call last)
+
+        <ipython-input-1-1c936cf4bf16> in <module>()
+    ----> 1 arr[0]
+    
+
+        NameError: name 'arr' is not defined
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{n}{arr}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}6}]:} 40
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}7}]:} \PY{n}{arr}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{:}\PY{p}{]}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}7}]:} array([30, 40])
+\end{Verbatim}
+        
+    \subsubsection{Differences between arrays and lists}
+
+The first difference to note between lists and arrays is that arrays are
+\emph{homogeneous}; i.e.~all elements of an array must be of the same
+type. In contrast, lists can contain elements of arbitrary type. For
+example, we can change the last element in our list above to be a
+string:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}8}]:} \PY{n}{lst}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{l+s}{\PYZsq{}}\PY{l+s}{a string inside a list}\PY{l+s}{\PYZsq{}}
+        \PY{n}{lst}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}8}]:} [10, 20, 30, 'a string inside a list']
+\end{Verbatim}
+        
+    but the same can not be done with an array, as we get an error message:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{arr}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{l+s}{\PYZsq{}}\PY{l+s}{a string inside an array}\PY{l+s}{\PYZsq{}}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+        ---------------------------------------------------------------------------
+    ValueError                                Traceback (most recent call last)
+
+        <ipython-input-9-29c0bfa5fa8a> in <module>()
+    ----> 1 arr[-1] = 'a string inside an array'
+    
+
+        ValueError: invalid literal for long() with base 10: 'a string inside an array'
+
+    \end{Verbatim}
+
+    Caveat, it can be done, but really \emph{don't do it}, lists are
+generally better at non-homogeonous collections:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{30}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{a string inside a list}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}1}]:} array(['10', '20', '30', 'a string inside a list'], 
+              dtype='|S22')
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{30}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{a string inside a list}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{n+nb}{object}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}2}]:} array([10, 20, 30, 'a string inside a list'], dtype=object)
+\end{Verbatim}
+        
+    \subsubsection{Array Attributes}
+
+The information about the type of an array is contained in its
+\emph{dtype} attribute:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}10}]:} \PY{n}{arr}\PY{o}{.}\PY{n}{dtype}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}10}]:} dtype('int64')
+\end{Verbatim}
+        
+    Once an array has been created, its dtype is fixed and it can only store
+elements of the same type. For this example where the dtype is integer,
+if we store a floating point number it will be automatically converted
+into an integer:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{arr}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{1.234}
+         \PY{n}{arr}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}11}]:} array([10, 20, 30,  1])
+\end{Verbatim}
+        
+    \subsubsection{Creating Arrays}
+
+Above we created an array from an existing list; now let us now see
+other ways in which we can create arrays, which we'll illustrate next. A
+common need is to have an array initialized with a constant value, and
+very often this value is 0 or 1 (suitable as starting value for additive
+and multiplicative loops respectively); \texttt{zeros} creates arrays of
+all zeros, with any desired dtype:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}12}]:} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{n+nb}{float}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}12}]:} array([ 0.,  0.,  0.,  0.,  0.])
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}13}]:} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{n+nb}{int}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}13}]:} array([0, 0, 0])
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}14}]:} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{n+nb}{complex}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}14}]:} array([ 0.+0.j,  0.+0.j,  0.+0.j])
+\end{Verbatim}
+        
+    and similarly for \texttt{ones}:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}15}]:} \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{5 ones:}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+5 ones: [ 1.  1.  1.  1.  1.]
+    \end{Verbatim}
+
+    If we want an array initialized with an arbitrary value, we can create
+an empty array and then use the fill method to put the value we want
+into the array:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}16}]:} \PY{n}{a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{empty}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}
+         \PY{n}{a}\PY{o}{.}\PY{n}{fill}\PY{p}{(}\PY{l+m+mf}{5.5}\PY{p}{)}
+         \PY{n}{a}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}16}]:} array([ 5.5,  5.5,  5.5,  5.5])
+\end{Verbatim}
+        
+    Alternatives, such as:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{np.ones(4) * 5.5}
+\item
+  \texttt{np.zeros(4) + 5.5}
+\end{itemize}
+
+are generally less efficient, but are also reasonable.
+
+    \subsubsection{Filling arrays with sequences}
+
+Numpy also offers the \texttt{arange} function, which works like the
+builtin \texttt{range} but returns an array instead of a list:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}20}]:} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}20}]:} array([ 5. ,  5.1,  5.2,  5.3,  5.4,  5.5,  5.6,  5.7,  5.8,  5.9,  6. ,
+                 6.1,  6.2,  6.3,  6.4,  6.5,  6.6,  6.7,  6.8,  6.9,  7. ,  7.1,
+                 7.2,  7.3,  7.4,  7.5,  7.6,  7.7,  7.8,  7.9,  8. ,  8.1,  8.2,
+                 8.3,  8.4,  8.5,  8.6,  8.7,  8.8,  8.9,  9. ,  9.1,  9.2,  9.3,
+                 9.4,  9.5,  9.6,  9.7,  9.8,  9.9])
+\end{Verbatim}
+        
+    and the \texttt{linspace} and \texttt{logspace} functions to create
+linearly and logarithmically-spaced grids respectively, with a fixed
+number of points and including both ends of the specified interval:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{k}{print} \PY{l+s}{\PYZdq{}}\PY{l+s}{A linear grid between 0 and 1:}\PY{l+s}{\PYZdq{}}
+        \PY{k}{print} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+A linear grid between 0 and 1:
+[ 0.    0.25  0.5   0.75  1.  ]
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{k}{print} \PY{l+s}{\PYZdq{}}\PY{l+s}{A logarithmic grid between 10**2 and 10**4:}\PY{l+s}{\PYZdq{}}
+        \PY{k}{print} \PY{n}{np}\PY{o}{.}\PY{n}{logspace}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+A logarithmic grid between 10**1 and 10**3:
+[   100.   1000.  10000.]
+    \end{Verbatim}
+
+    \subsubsection{Creating random arrays}
+
+Finally, it is often useful to create arrays with random numbers that
+follow a specific distribution. The \texttt{np.random} module contains a
+number of functions that can be used to this effect, for example this
+will produce an array of 5 random samples taken from a standard normal
+distribution (0 mean and variance 1):
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}23}]:} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{randn}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}23}]:} array([-0.84334417, -0.40047238,  0.26216058,  1.42346312, -1.05209843])
+\end{Verbatim}
+        
+    whereas this will also give 5 samples, but from a normal distribution
+with a mean of 10 and a variance of 3:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}25}]:} \PY{n}{norm10} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{normal}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}
+         \PY{n}{norm10}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}25}]:} array([  5.69464342,  11.3800105 ,   6.90729538,  10.4329192 ,  16.04373525])
+\end{Verbatim}
+        
+    \subsection{Indexing with other arrays}
+
+Above we saw how to index arrays with single numbers and slices, just
+like Python lists. But arrays allow for a more sophisticated kind of
+indexing which is very powerful: you can index an array with another
+array, and in particular with an array of boolean values. This is
+particluarly useful to extract information from an array that matches a
+certain condition.
+
+Consider for example that in the array \texttt{norm10} we want to
+replace all values above 9 with the value 0. We can do so by first
+finding the \emph{mask} that indicates where this condition is true or
+false:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}26}]:} \PY{n}{mask} \PY{o}{=} \PY{n}{norm10} \PY{o}{\PYZgt{}} \PY{l+m+mi}{9}
+         \PY{n}{mask}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}26}]:} array([False,  True, False,  True,  True], dtype=bool)
+\end{Verbatim}
+        
+    Now that we have this mask, we can use it to either read those values or
+to reset them to 0:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}28}]:} \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Values above 9:}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{norm10}\PY{p}{[}\PY{n}{norm10} \PY{o}{\PYZgt{}} \PY{l+m+mi}{9}\PY{p}{]}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Values above 9: [ 11.3800105   10.4329192   16.04373525]
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}29}]:} \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Resetting all values above 9 to 0...}\PY{l+s}{\PYZsq{}}
+         \PY{n}{norm10}\PY{p}{[}\PY{n}{mask}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{0}
+         \PY{k}{print} \PY{n}{norm10}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Resetting all values above 9 to 0\ldots
+[ 5.69464342  0.          6.90729538  0.          0.        ]
+    \end{Verbatim}
+
+    \subsection{Arrays with more than one dimension}
+
+Up until now all our examples have used one-dimensional arrays. But
+Numpy can create arrays of aribtrary dimensions, and all the methods
+illustrated in the previous section work with more than one dimension.
+For example, a list of lists can be used to initialize a two dimensional
+array:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}31}]:} \PY{n}{lst2} \PY{o}{=} \PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{]}\PY{p}{]}
+         \PY{n}{arr2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+         \PY{n}{arr2}
+         \PY{n}{arr2}\PY{o}{.}\PY{n}{shape}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}31}]:} (2, 2)
+\end{Verbatim}
+        
+    With two-dimensional arrays we start seeing the power of numpy: while a
+nested list can be indexed using repeatedly the \texttt{{[} {]}}
+operator, multidimensional arrays support a much more natural indexing
+syntax with a single \texttt{{[} {]}} and a set of indices separated by
+commas:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}33}]:} \PY{k}{print} \PY{n}{lst2}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+         \PY{k}{print} \PY{n}{arr2}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+2
+2
+    \end{Verbatim}
+
+    \subsection{Arrays with more than one dimension}
+
+Most of the array creation functions listed above can be used with more
+than one dimension, for example:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}34}]:} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}34}]:} array([[ 0.,  0.,  0.],
+                [ 0.,  0.,  0.]])
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}35}]:} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{normal}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}35}]:} array([[ 11.21935429,   6.95937781,  12.22843875,   8.29844811],
+                [ 12.47104408,   9.60844803,   9.21547789,  15.70517319]])
+\end{Verbatim}
+        
+    In fact, the shape of an array can be changed at any time, as long as
+the total number of elements is unchanged. For example, if we want a 2x4
+array with numbers increasing from 0, the easiest way to create it is:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}10}]:} \PY{n}{arr} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}
+         \PY{k}{print} \PY{n}{arr}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[0 1 2 3]
+ [4 5 6 7]]
+    \end{Verbatim}
+
+    \subsubsection{Views, not Copies}
+
+Note that reshaping (like most numpy operations), wherever possible,
+provides a \textbf{view} of \emph{the same memory}:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}30}]:} \PY{n}{arr} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)}
+         \PY{n}{arr\PYZus{}view} \PY{o}{=} \PY{n}{arr}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}
+         
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Before}\PY{l+s+se}{\PYZbs{}n}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr\PYZus{}view}
+         
+         \PY{n}{arr}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{1000}
+         
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{After}\PY{l+s+se}{\PYZbs{}n}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr\PYZus{}view}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Before
+[[0 1 2 3]
+ [4 5 6 7]]
+After
+[[1000    1    2    3]
+ [   4    5    6    7]]
+    \end{Verbatim}
+
+    This lack of copying allows for very efficient vectorized operations,
+but this power should be used responsibly.
+
+If in doubt, you can always copy the data to a different block of memory
+with the copy method.
+
+    \subsubsection{Slices}
+
+With multidimensional arrays, you can also use slices, and you can mix
+and match slices and single indices in the different dimensions:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}31}]:} \PY{n}{arr} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}
+         \PY{k}{print} \PY{n}{arr}
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Slicing in the second row:}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{:}\PY{l+m+mi}{4}\PY{p}{]}
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{All rows, third column   :}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{]}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[0 1 2 3]
+ [4 5 6 7]]
+Slicing in the second row: [6 7]
+All rows, third column   : [2 6]
+    \end{Verbatim}
+
+    If you only provide one index, then you will get an array with one less
+dimension containing that row:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}45}]:} \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{First row:  }\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Second row: }\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+First row:   [0 1 2 3]
+Second row:  [4 5 6 7]
+    \end{Verbatim}
+
+    \subsection{Array Properties and Methods}
+
+Now that we have seen how to create arrays with more than one dimension,
+it's a good idea to look at some of the most useful properties and
+methods that arrays have. The following provide basic information about
+the size, shape and data in the array:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}48}]:} \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Data type                :}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{dtype}
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Total number of elements :}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{size}
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Number of dimensions     :}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{ndim}
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Shape (dimensionality)   :}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{shape}
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Memory used (in bytes)   :}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{nbytes}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Data type                : int64
+Total number of elements : 8
+Number of dimensions     : 2
+Shape (dimensionality)   : (2, 4)
+Memory used (in bytes)   : 64
+    \end{Verbatim}
+
+    Arrays also have many useful methods, some especially useful ones are:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}49}]:} \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Minimum and maximum             :}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{min}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Sum and product of all elements :}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{prod}\PY{p}{(}\PY{p}{)}
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Mean and standard deviation     :}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Minimum and maximum             : 0 7
+Sum and product of all elements : 28 0
+Mean and standard deviation     : 3.5 2.29128784748
+    \end{Verbatim}
+
+    For these methods, the above operations area all computed on all the
+elements of the array. But for a multidimensional array, it's possible
+to do the computation along a single dimension, by passing the
+\texttt{axis} parameter; for example:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}50}]:} \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{For the following array:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{The sum of elements along the rows is    :}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{The sum of elements along the columns is :}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+For the following array:
+[[0 1 2 3]
+ [4 5 6 7]]
+The sum of elements along the rows is    : [ 6 22]
+The sum of elements along the columns is : [ 4  6  8 10]
+    \end{Verbatim}
+
+    As you can see in this example, the value of the \texttt{axis} parameter
+is the dimension which will be \emph{consumed} once the operation has
+been carried out. This is why to sum along the rows we use
+\texttt{axis=0}.
+
+This can be easily illustrated with an example that has more dimensions;
+we create an array with 4 dimensions and shape \texttt{(3,4,5,6)} and
+sum along the axis number 2 (i.e.~the \emph{third} axis, since in Python
+all counts are 0-based). That consumes the dimension whose length was 5,
+leaving us with a new array that has shape \texttt{(3,4,6)}:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}51}]:} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{.}\PY{n}{shape}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}51}]:} (3, 4, 6)
+\end{Verbatim}
+        
+    Another widely used property of arrays is the \texttt{.T} attribute,
+which allows you to access the transpose of the array:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}52}]:} \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Array:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}
+         \PY{k}{print} \PY{l+s}{\PYZsq{}}\PY{l+s}{Transpose:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{o}{.}\PY{n}{T}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array:
+[[0 1 2 3]
+ [4 5 6 7]]
+Transpose:
+[[0 4]
+ [1 5]
+ [2 6]
+ [3 7]]
+    \end{Verbatim}
+
+    \subsection{Operating with arrays}
+
+Arrays support all regular arithmetic operators, and the numpy library
+also contains a complete collection of basic mathematical functions that
+operate on arrays. It is important to remember that in general, all
+operations with arrays are applied \emph{element-wise}, i.e., are
+applied to all the elements of the array at the same time. Consider for
+example:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}53}]:} \PY{n}{arr1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}
+         \PY{n}{arr2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{14}\PY{p}{)}
+         \PY{k}{print} \PY{n}{arr1}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{+}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr2}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{=}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr1} \PY{o}{+} \PY{n}{arr2}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[0 1 2 3] + [10 11 12 13] = [10 12 14 16]
+    \end{Verbatim}
+
+    Importantly, you must remember that even the multiplication operator is
+by default applied element-wise, it is \emph{not} the matrix
+multiplication from linear algebra:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}54}]:} \PY{k}{print} \PY{n}{arr1}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{*}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr2}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{=}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr1} \PY{o}{*} \PY{n}{arr2}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[0 1 2 3] * [10 11 12 13] = [ 0 11 24 39]
+    \end{Verbatim}
+
+    We may also multiply an array by a scalar:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}55}]:} \PY{l+m+mf}{1.5} \PY{o}{*} \PY{n}{arr1}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}55}]:} array([ 0. ,  1.5,  3. ,  4.5])
+\end{Verbatim}
+        
+    This is a first example of \textbf{broadcasting}
+
+    \subsubsection{Broadcasting}
+
+While the fact that numpy operates on an element-wise basis means that
+in principle arrays must always match in their dimensionality, numpy
+will \emph{broadcast} dimensions when possible. Here is an example of
+broadcasting a scalar to a 1D array:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}56}]:} \PY{k}{print} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+         \PY{k}{print} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)} \PY{o}{+} \PY{l+m+mi}{5}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[0 1 2]
+[5 6 7]
+    \end{Verbatim}
+
+    We can also broadcast a 1D array to a 2D array, in this case adding a
+vector to all rows of a matrix:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}57}]:} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}57}]:} array([[ 1.,  2.,  3.],
+                [ 1.,  2.,  3.],
+                [ 1.,  2.,  3.]])
+\end{Verbatim}
+        
+    We can also broadcast in two directions at a time:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}43}]:} \PY{n}{a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+         \PY{n}{b} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+         \PY{k}{print} \PY{n}{a}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{+}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{b}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{=}\PY{l+s+se}{\PYZbs{}n}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{a} \PY{o}{+} \PY{n}{b}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[0]
+ [1]
+ [2]] + [0 1 2] =
+[[0 1 2]
+ [1 2 3]
+ [2 3 4]]
+    \end{Verbatim}
+
+    \subsubsection{Rules of Broadcasting}
+
+Broadcasting rules can do the following:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  If the two arrays differ in their number of dimensions, the shape of
+  the array with fewer dimensions is \emph{padded} with ones on its
+  leading (left) side.
+\item
+  If the shape of the two arrays does not match in any dimension, the
+  array with shape equal to 1 in that dimension is \emph{stretched} to
+  match the other shape.
+\item
+  If in any dimension the sizes disagree and neither is equal to 1, an
+  error is raised.
+\end{enumerate}
+
+Note that all of this happens without ever actually creating the
+stretched arrays in memory! This broadcasting behavior is in practice
+enormously powerful, especially because when numpy broadcasts to create
+new dimensions or to `stretch' existing ones, it doesn't actually
+replicate the data. In the example above the operation is carried
+\emph{as if} the 1.5 was a 1-d array with 1.5 in all of its entries, but
+no actual array was ever created. This can save lots of memory in cases
+when the arrays in question are large and can have significant
+performance implications.
+
+    \subsubsection{Broadcasting Examples:}
+
+So when we do
+
+\begin{verbatim}
+np.arange(3) + 5
+\end{verbatim}
+
+The scalar 5 is
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  first `promoted' to a 1-dimensional array of length 1
+\item
+  then, this array is `stretched' to length 3 to match the first array.
+\end{itemize}
+
+After these two operations are complete, the addition can proceed as now
+both operands are one-dimensional arrays of length 3.
+
+    When we do
+
+\begin{verbatim}
+np.ones((3, 3)) + np.arange(3)
+\end{verbatim}
+
+The second array is
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  first `promoted' to a 2-dimensional array of shape (1, 3)
+\item
+  then `stretched' to length 3 to match the first array
+\end{itemize}
+
+    When we do
+
+\begin{verbatim}
+np.arange(3).reshape((3, 1)) + np.arange(3)
+\end{verbatim}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  the second array is `promoted' to a 2-dimensional array of shape (1,
+  3)
+\item
+  the second array is `stretched' to shape (3, 3)
+\item
+  the first array is `stretched' to shape (3, 3)
+\end{itemize}
+
+Then the operation proceeds as if on two 3 $\times$ 3 arrays
+
+    The general rule is: when operating on two arrays, NumPy compares their
+shapes element-wise. It starts with the trailing dimensions, and works
+its way forward, creating dimensions of length 1 as needed. Two
+dimensions are considered compatible when
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  they are equal to begin with, or
+\item
+  one of them is 1; in this case numpy will do the `stretching' to make
+  them equal.
+\end{itemize}
+
+If these conditions are not met, a
+\texttt{ValueError: frames are not aligned} exception is thrown,
+indicating that the arrays have incompatible shapes. The size of the
+resulting array is the maximum size along each dimension of the input
+arrays.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}60}]:} \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+         \PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+         
+         \PY{n}{x} \PY{o}{+} \PY{n}{y}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}60}]:} array([[ 0.,  0.,  0.,  0.],
+                [ 0.,  0.,  0.,  0.],
+                [ 0.,  0.,  0.,  0.]])
+\end{Verbatim}
+        
+    \subsubsection{Visualizing Broadcasting}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{files/images/fig_broadcast_visual_1.png}
+\caption{Illustration of broadcasting}
+\end{figure}
+
+(\href{http://www.astroml.org/book_figures/appendix/fig_broadcast_visual.html}{image
+source})
+
+    \subsubsection{Questions:}
+
+Will the following broadcasting operations work?
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}63}]:} \PY{n}{arr1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}
+         \PY{n}{arr2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+         
+         \PY{n}{arr1} \PY{o}{+} \PY{n}{arr2}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}63}]:} array([[ 2.,  2.,  2.],
+                [ 2.,  2.,  2.]])
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}65}]:} \PY{n}{arr1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}
+         \PY{n}{arr2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+         
+         \PY{n}{arr1} \PY{o}{+} \PY{n}{arr2}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}65}]:} array([[ 2.,  2.,  2.],
+                [ 2.,  2.,  2.]])
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}67}]:} \PY{n}{arr1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}
+         \PY{n}{arr2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+         
+         \PY{n}{arr1} \PY{o}{+} \PY{n}{arr2}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}67}]:} array([[ 2.,  2.,  2.],
+                [ 2.,  2.,  2.]])
+\end{Verbatim}
+        
+    \subsubsection{Quick Exercise:}
+
+Use \texttt{np.arange} and \texttt{reshape} to create the array
+
+\begin{verbatim}
+A = [[1 2 3 4]
+     [5 6 7 8]]
+\end{verbatim}
+
+Use \texttt{np.arange} to create the array
+
+\begin{verbatim}
+B = [1 2]
+\end{verbatim}
+
+Use broadcasting to add \texttt{B} to each \textbf{column} of \texttt{A}
+to create the final array
+
+\begin{verbatim}
+A + B = [[2  3  4  5]
+         [7  8  9 10]
+\end{verbatim}
+
+Hint: what shape does \texttt{B} have to be changed to?
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}75}]:} \PY{n}{A} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+         \PY{n}{B} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+         \PY{n}{A} \PY{o}{+} \PY{n}{B}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}75}]:} array([[ 2,  3,  4,  5],
+                [ 7,  8,  9, 10]])
+\end{Verbatim}
+        
+    \subsection{Reshape and newaxis}
+
+    Rather than specifying the length of the array all of the time with the
+reshape method, there is a shortand meaning for ``-1''
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{o}{.}\PY{n}{shape}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}3}]:} (1, 8)
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{o}{.}\PY{n}{shape}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}6}]:} (2, 4)
+\end{Verbatim}
+        
+    Another way to change the shape of \texttt{B} is to use the
+\texttt{newaxis} keyword:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}79}]:} \PY{k}{print} \PY{n}{B}\PY{o}{.}\PY{n}{shape}
+         \PY{k}{print} \PY{n}{B}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{newaxis}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{newaxis}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{newaxis}\PY{p}{]}\PY{o}{.}\PY{n}{shape}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+(2,)
+(1, 2, 1, 1)
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}82}]:} \PY{n}{B} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}
+         \PY{n}{B}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{newaxis}\PY{p}{]}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}82}]:} array([[0, 1],
+                [2, 3]])
+\end{Verbatim}
+        
+    \subsubsection{Element-wise Functions}
+
+As we mentioned before, Numpy ships with a full complement of
+mathematical functions that work on entire arrays, including logarithms,
+exponentials, trigonometric and hyperbolic trigonometric functions, etc.
+Furthermore, scipy ships a rich special function library in the
+\texttt{scipy.special} module that includes Bessel, Airy, Fresnel,
+Laguerre and other classical special functions. For example, sampling
+the sine function at 100 points between $0$ and $2\pi$ is as simple as:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}87}]:} \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{)}
+         \PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+
+
+    \subsection{Linear algebra in numpy}
+
+
+    Numpy ships with a basic linear algebra library, and all arrays have a
+\texttt{dot} method whose behavior is that of the scalar dot product
+when its arguments are vectors (one-dimensional arrays) and the
+traditional matrix multiplication when one or both of its arguments are
+two-dimensional arrays:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}88}]:} \PY{n}{v1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}
+         \PY{n}{v2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+         
+         \PY{k}{print} \PY{n}{v1}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{.}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{v2}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{=}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{v1}\PY{p}{,} \PY{n}{v2}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[2 3 4] . [1 0 1] = 6
+    \end{Verbatim}
+
+    Here is a regular matrix-vector multiplication, note that the array
+\texttt{v1} should be viewed as a \emph{column} vector in traditional
+linear algebra notation; numpy makes no distinction between row and
+column vectors and simply verifies that the dimensions match the
+required rules of matrix multiplication, in this case we have a
+$2 \times 3$ matrix multiplied by a 3-vector, which produces a 2-vector:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}89}]:} \PY{n}{A} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{6}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+         \PY{k}{print} \PY{n}{A}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{x}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{v1}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{=}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{A}\PY{p}{,} \PY{n}{v1}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[0 1 2]
+ [3 4 5]] x [2 3 4] = [11 38]
+    \end{Verbatim}
+
+    For matrix-matrix multiplication, the same dimension-matching rules must
+be satisfied, e.g.~consider the difference between $A \times A^T$:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}90}]:} \PY{k}{print} \PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{A}\PY{p}{,} \PY{n}{A}\PY{o}{.}\PY{n}{T}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 5 14]
+ [14 50]]
+    \end{Verbatim}
+
+    and $A^T \times A$:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}91}]:} \PY{k}{print} \PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{A}\PY{o}{.}\PY{n}{T}\PY{p}{,} \PY{n}{A}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 9 12 15]
+ [12 17 22]
+ [15 22 29]]
+    \end{Verbatim}
+
+    \subsection{Reading and writing arrays to disk}
+
+Numpy lets you read and write arrays into files in a number of ways. In
+order to use these tools well, it is critical to understand the
+difference between a \emph{text} and a \emph{binary} file containing
+numerical data. In a text file, the number $\pi$ could be written as
+``3.141592653589793'', for example: a string of digits that a human can
+read, with in this case 15 decimal digits. In contrast, that same number
+written to a binary file would be encoded as 8 characters (bytes) that
+are not readable by a human but which contain the exact same data that
+the variable \texttt{pi} had in the computer's memory.
+
+The tradeoffs between the two modes are thus:
+
+\begin{itemize}
+\item
+  Text mode: occupies more space, precision can be lost (if not all
+  digits are written to disk), but is readable and editable by hand with
+  a text editor. Can \emph{only} be used for one- and two-dimensional
+  arrays.
+\item
+  Binary mode: compact and exact representation of the data in memory,
+  can't be read or edited by hand. Arrays of any size and dimensionality
+  can be saved and read without loss of information.
+\end{itemize}
+
+    \paragraph{Text data}
+
+First, let's see how to read and write arrays in text mode. The
+\texttt{np.savetxt} function saves an array to a text file, with options
+to control the precision, separators and even adding a header:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}19}]:} \PY{n}{arr} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}
+         \PY{k}{print} \PY{n}{arr}
+         
+         \PY{n}{np}\PY{o}{.}\PY{n}{savetxt}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{test.out}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{p}{,} \PY{n}{fmt}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s+si}{\PYZpc{}.2e}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{header}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{My dataset}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+         \PY{o}{!}cat test.out
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[  0.           1.66666667   3.33333333   5.           6.66666667]
+ [  8.33333333  10.          11.66666667  13.33333333  15.        ]]
+\# My dataset
+0.00e+00 1.67e+00 3.33e+00 5.00e+00 6.67e+00
+8.33e+00 1.00e+01 1.17e+01 1.33e+01 1.50e+01
+    \end{Verbatim}
+
+    And this same type of file can then be read with the matching
+\texttt{np.loadtxt} function:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}18}]:} \PY{n}{arr2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{loadtxt}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{test.out}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{k}{print} \PY{n}{arr2}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[  0.     1.67   3.33   5.     6.67]
+ [  8.33  10.    11.7   13.3   15.  ]]
+    \end{Verbatim}
+
+    \paragraph{Binary Data}
+
+For binary data, Numpy provides the \texttt{np.save} and
+\texttt{np.savez} routines. The first saves a single array to a file
+with \texttt{.npy} extension, while the latter can be used to save a
+\emph{group} of arrays into a single file with \texttt{.npz} extension.
+The files created with these routines can then be read with the
+\texttt{np.load} function.
+
+Let us first see how to use the simpler \texttt{np.save} function to
+save a single array:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}20}]:} \PY{n}{np}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{test.npy}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{p}{)}
+         
+         \PY{c}{\PYZsh{} Now we read this back}
+         \PY{n}{arr2n} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{load}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{test.npy}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{k}{print} \PY{n}{arr2n}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[  0.           1.66666667   3.33333333   5.           6.66666667]
+ [  8.33333333  10.          11.66666667  13.33333333  15.        ]]
+    \end{Verbatim}
+
+    Now let us see how the \texttt{np.savez} function works. You give it a
+filename and either a sequence of arrays or a set of keywords. In the
+first mode, the function will auotmatically name the saved arrays in the
+archive as \texttt{arr\_0}, \texttt{arr\_1}, etc:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}21}]:} \PY{n}{np}\PY{o}{.}\PY{n}{savez}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{test.npz}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{arr}\PY{p}{,} \PY{n}{arr2}\PY{p}{)}
+         \PY{n}{arrays} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{load}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{test.npz}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{arrays}\PY{o}{.}\PY{n}{files}
+         
+         \PY{n}{arrays}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{arr\PYZus{}1}\PY{l+s}{\PYZsq{}}\PY{p}{]}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}21}]:} array([[  0.  ,   1.67,   3.33,   5.  ,   6.67],
+                [  8.33,  10.  ,  11.7 ,  13.3 ,  15.  ]])
+\end{Verbatim}
+        
+    \subsubsection{Loading from more complex formats}
+
+TODO
+
+    \section{Breakout: trapezoidal integration}
+
+\textbf{Illustrates}: basic array slicing, functions as first class
+objects.
+
+In this exercise, you are tasked with implementing the simple trapezoid
+rule formula for numerical integration. If we want to compute the
+definite integral
+
+\[
+     \int_{a}^{b}f(x)dx
+\]
+
+we can partition the integration interval $[a,b]$ into smaller
+subintervals, and approximate the area under the curve for each
+subinterval by the area of the trapezoid created by linearly
+interpolating between the two function values at each end of the
+subinterval:
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{files/images/trapezoidal_rule.png}
+\caption{Illustration of the trapezoidal rule}
+\end{figure}
+
+The blue line represents the function $f(x)$ and the red line is the
+linear interpolation. By subdividing the interval $[a,b]$, the area
+under $f(x)$ can thus be approximated as the sum of the areas of all the
+resulting trapezoids.
+
+If we denote by $x_{i}$ ($i=0,\ldots,n,$ with $x_{0}=a$ and $x_{n}=b$)
+the abscissas where the function is sampled, then
+
+\[
+   \int_{a}^{b}f(x)dx\approx\frac{1}{2}\sum_{i=1}^{n}\left(x_{i}-x_{i-1}\right)\left(f(x_{i})+f(x_{i-1})\right).
+\]
+
+The common case of using equally spaced abscissas with spacing
+$h=(b-a)/n$ reads simply
+
+\[
+   \int_{a}^{b}f(x)dx\approx\frac{h}{2}\sum_{i=1}^{n}\left(f(x_{i})+f(x_{i-1})\right).
+\]
+
+One frequently receives the function values already precomputed,
+$y_{i}=f(x_{i}),$ so the equation above becomes
+
+\[
+   \int_{a}^{b}f(x)dx\approx\frac{1}{2}\sum_{i=1}^{n}\left(x_{i}-x_{i-1}\right)\left(y_{i}+y_{i-1}\right).
+\]
+
+    TODO: Add naive Python implementation with loops, to simplify the task.
+
+    \subsubsection{Exercises}
+
+\paragraph{Part 1}
+
+Write a function \texttt{trapz(x, y)}, that applies the trapezoid
+formula to pre-computed values, where \texttt{x} and \texttt{y} are 1-d
+arrays. (Use numpy operations, not loops!)
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}}]:} 
+\end{Verbatim}
+
+    \paragraph{Part 2}
+
+Write a function \texttt{trapzf(f, a, b, npts=100)} that accepts a
+function \texttt{f}, the endpoints \texttt{a} and \texttt{b} and the
+number of samples to take \texttt{npts}. Sample the function uniformly
+at these points and return the value of the integral.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}}]:} 
+\end{Verbatim}
+
+    \paragraph{Part 3}
+
+Verify that both functions above are correct by showing that they
+produce correct values for a simple integral such as $\int_0^3 x^2$.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}}]:} 
+\end{Verbatim}
+
+    \paragraph{Part 4}
+
+Preview of what's to come: use the documentation features of IPython to
+explore the submodule \texttt{scipy.integrage}. Can you find a suitable
+function to perform this integration above?
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}}]:} 
+\end{Verbatim}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
